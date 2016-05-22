@@ -9,6 +9,14 @@ import json
 import jsonschema
 from jsonschema import validate
 
+# A web annotation server based on LDP Protocol (http://www.w3.org/TR/2016/WD-annotation-protocol-20160331/)
+# Things to do:
+# Handle credentials by factoring them out of this code
+# Implement containers based on LPD (https://www.w3.org/TR/ldp-primer/)
+#   start with Basic Container implementation
+#   only annotaitons will be stored in an annotation Container
+#   test with annotations for a given context (place, document, ... )
+
 
 app = Flask(__name__)
 
@@ -22,24 +30,14 @@ config = {
     "api_url": "http://jants.janastu.org/annos/",
     "DEBUG": True,
     "HOST": '0.0.0.0'
-   }	
+   }
 
 
 # Cloudant database endpoint
 # anno_api = "http://jants.janastu.org/annos/"
 
-
-# what is this for?
-schema = {
-    "type" : "object",
-    "properties" : {
-        "price" : {"type" : "number"},
-        "name" : {"type" : "string"},
-    },
-}
-
-
 # Get list of annotations
+# @todo implement the BasicContainer for annotations to group them
 @app.route('/annotations/api/v1.0/annos', methods=['GET'])
 def get_annotations():
     api_req =  config['api_url']+"_all_docs"
@@ -95,13 +93,15 @@ def update_annotation(anno_id):
     annotation = request.get_json()
     # refer to cloudant docs update api
     annotation['_rev'] = db_rev.strip('"')
-    
+
 #PUT DB
     putResp = requests.put(api_url,data=json.dumps(annotation),headers=headers,auth=auth)
     return jsonify({'response': putResp.json(), 'annnotation': annotation})
 
 
-# Delete existing annotation
+# Delete annotation with id anno_id
+# Note that Cloudant insists on knwoing the revision of a resource, so revision must be included in call.
+# Cloudant never really deletes any resource, just flags it.
 @app.route('/annotations/api/v1.0/annos/<string:anno_id>', methods=['DELETE'])
 def delete_task(anno_id):
     auth=(config['key'], config['passphrase'])
