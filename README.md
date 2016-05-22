@@ -5,3 +5,5 @@ Annotation server prototype specific to w3c annotation protocol as defined https
 Like any flask application
 Install dependencies from requirements.txt
 and run server.py
+
+Read more about relevant specifications and whatever else emerges [here](https://github.com/janastu/anno-server-prototype/wiki)
