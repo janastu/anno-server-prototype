@@ -6,4 +6,5 @@ Like any flask application
 Install dependencies from requirements.txt
 and run server.py
 
+# Specifications / Design / More
 Read more about relevant specifications and whatever else emerges [here](https://github.com/janastu/anno-server-prototype/wiki)
