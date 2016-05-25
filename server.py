@@ -8,25 +8,9 @@ import cloudant
 import json
 import jsonschema
 from jsonschema import validate
-
+import config
 
 app = Flask(__name__)
-
-# Global configuration variables
-# Access to variables as config['key'] and config['passphrase']
-# api_url is the cloudant database url
-# Register and create db @ cloudant.com
-config = {
-    "key":"peredgerdedediffeetheret",
-    "passphrase":"292ce457c87db9ec202e9bd60ec833426dba271e",
-    "api_url": "http://jants.janastu.org/annos/",
-    "DEBUG": True,
-    "HOST": '0.0.0.0'
-   }	
-
-
-# Cloudant database endpoint
-# anno_api = "http://jants.janastu.org/annos/"
 
 
 # what is this for?
@@ -42,16 +26,17 @@ schema = {
 # Get list of annotations
 @app.route('/annotations/api/v1.0/annos', methods=['GET'])
 def get_annotations():
-    api_req =  config['api_url']+"_all_docs"
+    api_req =  config.DATABASE_URL+"_all_docs"
     response = requests.get(api_req)
     response = response.json()
+    print (config.API_KEY+"PRINT COMMAND")
     return jsonify({'annotations': response['rows']})
 
 
 # Get annotation with id = anno_id
 @app.route('/annotations/api/v1.0/annos/<string:anno_id>', methods=['GET'])
 def get_annotation(anno_id):
-    api_req = config['api_url']+anno_id
+    api_req = config.DATABASE_URL+anno_id
     response = requests.get(api_req)
     if response.status_code == 404:
         abort(404)
@@ -65,8 +50,8 @@ def create_annotation():
     if not request.json or not 'body' in request.json:
         abort(400)
     annotation = request.get_json()
-    auth=(config['key'], config['passphrase'])
-    api_url = config['api_url']
+    auth=(config.API_KEY, config.API_SECRET)
+    api_url = config.DATABASE_URL
     headers = {'content-type': 'application/json'}
     response = requests.post(api_url,data=json.dumps(annotation),headers=headers,auth=auth)
     return jsonify({'response': response.json(), 'annotation': annotation}), 201
@@ -76,7 +61,7 @@ def create_annotation():
 @app.route('/annotations/api/v1.0/annos/<string:anno_id>', methods=['PUT'])
 def update_annotation(anno_id):
 #to do: fetch annotation
-    api_url = config['api_url']+anno_id
+    api_url = config.DATABASE_URL+anno_id
     response = requests.get(api_url)
     db_rev = response.headers.get('Etag')
     if response.status_code == 404:
@@ -90,7 +75,7 @@ def update_annotation(anno_id):
         abort(400)
 
 #update fields
-    auth=(config['key'], config['passphrase'])
+    auth=(config.API_KEY, config.API_SECRET)
     headers = {'content-type': 'application/json'}
     annotation = request.get_json()
     # refer to cloudant docs update api
@@ -104,12 +89,12 @@ def update_annotation(anno_id):
 # Delete existing annotation
 @app.route('/annotations/api/v1.0/annos/<string:anno_id>', methods=['DELETE'])
 def delete_task(anno_id):
-    auth=(config['key'], config['passphrase'])
-    api_req = config['api_url']+anno_id
+    auth=(config.API_KEY, config.API_SECRET)
+    api_url = config.DATABASE_URL+anno_id
     headers = {'content-type': 'application/json'}
-    r = requests.get(api_req)
+    r = requests.get(api_url)
     rev = r.json()['_rev']
-    api_rev=api_req+'?rev='+rev
+    api_rev=api_url+'?rev='+rev
     response = requests.delete(api_rev)
     if response.status_code == 404:
         abort(404)
@@ -117,4 +102,4 @@ def delete_task(anno_id):
 
 
 if __name__ == '__main__':
-    app.run(debug=config['DEBUG'],host=config['HOST'])
+    app.run(debug=config.DEBUG,host=config.HOST)
