@@ -21,4 +21,7 @@ After the dependencies have successfully installed, run the server.py file
 
 If all went well, your application should be running at port 5000,
 you should see something like below in your terminal.  
-  ` * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)`
+  ` * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)`  
+
+### Tests - Coming Soon...  
+Help needed with tests
