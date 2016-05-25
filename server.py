@@ -40,7 +40,6 @@ def get_annotations():
     api_req =  config.DATABASE_URL+"_all_docs"
     response = requests.get(api_req)
     response = response.json()
-    print (config.API_KEY+"PRINT COMMAND")
     return jsonify({'annotations': response['rows']})
 
 
