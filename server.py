@@ -11,6 +11,7 @@
 
 from __future__ import print_function
 import sys
+from base64 import b64encode
 from flask import Flask, jsonify, abort, make_response, request
 import requests
 import cloudant
@@ -57,13 +58,19 @@ def get_annotation(anno_id):
 # Post new annotation
 @app.route('/annotations/api/v1.0/annos', methods=['POST'])
 def create_annotation():
+    api_url = config.DATABASE_URL
     if not request.json or not 'body' in request.json:
         abort(400)
     annotation = request.get_json()
-    auth=(config.API_KEY, config.API_SECRET)
-    api_url = config.DATABASE_URL
-    headers = {'content-type': 'application/json'}
-    response = requests.post(api_url,data=json.dumps(annotation),headers=headers,auth=auth)
+    # Basic Http auth implementation encrypting username and pwd
+    headers = {
+	    'Authorization': 'Basic ' + b64encode("{0}:{1}".format(config.USER_NAME, config.PASSWORD)),
+	    'content-type': 'application/json'
+    }
+    # TODO: Oauth 2 implementation
+    # auth=(config.API_KEY, config.API_SECRET)
+    # headers = {'content-type': 'application/json'}
+    response = requests.post(api_url,data=json.dumps(annotation),headers=headers)
     return jsonify({'response': response.json(), 'annotation': annotation}), 201
 
 

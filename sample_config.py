@@ -7,6 +7,11 @@ API_KEY = 'your cloudant key'
 API_SECRET = 'your cloudant secret'
 DATABASE_URL = 'your cloudant database url'
 
+#Cloudant Username and Password for basic auth
+USER_NAME = 'your cloudant username'
+PASSWORD = 'your cloudant password'
+
+
 # Flask environment variables
 DEBUG = True
 HOST = '0.0.0.0'
