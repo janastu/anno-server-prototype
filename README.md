@@ -1,5 +1,8 @@
-# anno-server-prototype
+# Annotation Server Prototype
 Annotation server prototype specific to w3c annotation protocol as defined https://www.w3.org/TR/annotation-protocol at the time of this repo creation
+
+# Specifications / Design / More
+Read more about relevant specifications and whatever else emerges [here](https://github.com/janastu/anno-server-prototype/wiki)
 
 # Installation
 Like any flask application
