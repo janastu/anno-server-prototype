@@ -24,4 +24,5 @@ you should see something like below in your terminal.
   ` * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)`  
 
 ### Tests - Coming Soon...  
+`python -m unittest discover`  
 Help needed with tests
